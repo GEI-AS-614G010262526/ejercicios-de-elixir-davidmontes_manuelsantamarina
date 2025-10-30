@@ -15,31 +15,8 @@ defmodule Eratostenes do
    [2 | Enum.filter(Enum.to_list(2..n), fn x -> rem(x, 2) != 0 end)]
   end
 
-  # def filtro(mi_primo, mi_siguiente, mi_lista_primos) do
-  #receive do
-  #  {:number, number} ->
-  #   if mi_primo == nil do
-  #    mi_primo_nuevo = number mi_siguiente = spawn(Eratostenes, filtro,[nil, nil, [mi_lista_primos]])
-  #    filtro(mi_primo_nuevo, mi_siguiente_nuevo, mi_lista_primos)
-  #      else
-  #   if (rem(number,mi_primo) != 0) do
-  #    send(mi_siguiente, {:number, number})
-  #   end
-  #  end
-  #  {:stop} ->
-  #    send(mi_siguiente,{:final})
-  #    :ok
-  #end
-  def pp(what_to_print, debug_message \\ "") do
-    IO.puts("#{IO.ANSI.yellow()} START #{debug_message} ====================")
-    IO.puts(IO.ANSI.yellow() <> inspect(what_to_print, pretty: true, limit: :infinity))
-    IO.puts("#{IO.ANSI.yellow()} END   #{debug_message} ====================\n\n")
-    what_to_print
-  end
-
   #Ahora mismo el código tiene un problema: nos estamos saltando algunos primos. Es probable que esto se deba a que no agregamos
   def filtro(mi_primo, mi_siguiente, mi_lista_primos) do
-    #IO.inspect({self(),DateTime.utc_now(), mi_primo, mi_siguiente, [number | mi_lista_primos]}, label: "@START")
     receive do
       {:number, number} ->
         if mi_primo == nil do
@@ -53,7 +30,6 @@ defmodule Eratostenes do
             #We also send our current primes list since we want to have them in the last one.
             if mi_siguiente == nil do
               mi_siguiente = spawn(fn -> filtro(number, nil, [number|mi_lista_primos]) end)
-              IO.inspect({self(),DateTime.utc_now(),  mi_primo, mi_siguiente,  [number|mi_lista_primos]}, label: "SIGUIENTE AÑADIDO")
               filtro(mi_primo,mi_siguiente,[number|mi_lista_primos])
             else
               send(mi_siguiente, {:number, number})
@@ -63,6 +39,12 @@ defmodule Eratostenes do
             filtro(mi_primo, mi_siguiente, [number | mi_lista_primos])
           end
         end
+      {:stop, original_caller} ->
+        if mi_siguiente == nil do
+          send(original_caller, {:result, Enum.reverse(mi_lista_primos)})
+        else
+          send(mi_siguiente, {:stop, original_caller}); :ok
+        end
       :stop -> :ok
     end
   end
@@ -70,8 +52,12 @@ defmodule Eratostenes do
   def primos(n) when n>1 do
     next = spawn(fn -> filtro(nil,nil,[]) end)
     Enum.map(lista_optimizada(n), fn x -> send(next, {:number, x}) end)
-    send(next, :stop)
+    send(next, {:stop, self()})
+    receive do
+      {:result, result} -> IO.puts("AQUÍ"); IO.inspect(result); :ok
+    end
   end
+
 
   ## Devuelve la lista vacía
   def primos(_) do
