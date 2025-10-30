@@ -53,7 +53,7 @@ defmodule Eratostenes do
     Enum.map(lista_optimizada(n), fn x -> send(next, {:number, x}) end)
     send(next, {:stop, self()})
     receive do
-      {:result, result} -> IO.puts("AQUÍ"); IO.inspect(result); :ok
+      {:result, result} -> result
     end
   end
 
