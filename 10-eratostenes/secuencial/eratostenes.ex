@@ -10,7 +10,7 @@ defmodule Eratostenes do
     Enum.reverse(lista)
   end
   def criba(lista,primo,n, listafinal)  do
-    [h|t] = Enum.filter(lista, fn x -> rem(x, primo) != 0 or x == primo end)
+    [h|t] = Enum.filter(lista, fn x -> rem(x, primo) != 0 end)
     criba(t,h,n, [h|listafinal])
   end
 end
