@@ -15,7 +15,6 @@ defmodule Eratostenes do
    [2 | Enum.filter(Enum.to_list(2..n), fn x -> rem(x, 2) != 0 end)]
   end
 
-  #Ahora mismo el código tiene un problema: nos estamos saltando algunos primos. Es probable que esto se deba a que no agregamos
   def filtro(mi_primo, mi_siguiente, mi_lista_primos) do
     receive do
       {:number, number} ->
@@ -56,25 +55,6 @@ defmodule Eratostenes do
     receive do
       {:result, result} -> IO.puts("AQUÍ"); IO.inspect(result); :ok
     end
-  end
-
-
-  ## Devuelve la lista vacía
-  def primos(_) do
-    []
-  end
-
-  #Da la vuelta a la lista final de criba cuando le llega la lista inicial vacía.
-  def criba([],_,_, lista) do
-    Enum.reverse(lista)
-  end
-
-  #Criba filtra los números que sean
-  #Lo mete en listafinal hasta que la lista de entrada sea vacía,
-  #que es cuando entra en la otra función criba() y le da la vuelta a listafinal.
-  def criba(lista,primo,n, listafinal)  do
-    [h|t] = Enum.filter(lista, fn x -> rem(x, primo) != 0 or x == primo end)
-    criba(t,h,n, [h|listafinal])
   end
 
 end
