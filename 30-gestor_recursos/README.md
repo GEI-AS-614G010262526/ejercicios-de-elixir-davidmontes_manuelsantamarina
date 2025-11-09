@@ -52,13 +52,13 @@ gestión de un conjunto de recursos. Los servicios son los siguientes:
 
 - Los recursos se asignan en un orden arbitrario.
 
-- Para facilitar el envío de mensajes al servidor, el proceso se
+- [X] Para facilitar el envío de mensajes al servidor, el proceso se
   registra con el nombre `gestor`.
 
-- El módulo ofrece una función `start/1` que inicia el gestor y lo
+- [X] El módulo ofrece una función `start/1` que inicia el gestor y lo
   registra con el nombre especificado.
 
-- El módulo ofrece a los clientes un API con las funciones `alloc/0`,
+- [X] El módulo ofrece a los clientes un API con las funciones `alloc/0`,
   `release/1`, `avail/0` que encapsulan la interacción con el
   servidor.
 
